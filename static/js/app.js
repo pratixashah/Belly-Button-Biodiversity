@@ -31,6 +31,7 @@ function unpack(rows, index) {
 
 var x=[];
 var y=[];
+var labels=[];
 
   function buildPlot() {
 
@@ -38,14 +39,21 @@ var y=[];
     d3.json(url).then(function(data) {
     
     console.log(data.samples);
-    
+
     var selected = data.samples.map(function (row){
         if(row.id === selectedid)
         {
-            x= row.otu_ids;
-            y = row.sample_values;
-            return x,y;
-            
+            y = row.sample_values.sort((a,b) => b.sample_values - a.sample_values);
+            x = row.otu_ids.sort((a,b) => b.sample_values - a.sample_values);
+            labels = row.otu_labels;
+
+            x = x.slice(0,10).reverse();
+            y = y.slice(0,10).reverse();
+            labels = labels.slice(0,10).reverse();
+            console.log(x);
+            console.log(y);
+            console.log(labels);
+            return true;
         }
         else
         {
@@ -53,11 +61,29 @@ var y=[];
         }
     });
     //var selecteddata = unpack(data.samples,selectedid)[0];
-    console.log(selected);
-    console.log(x);
-    console.log(y);
+    //console.log(selected);
+
+    var trace1 = {
+        y:x.map((row) => `OTU ${row}`),
+        x:y,
+        text:labels,
+        type:"bar",
+        orientation:'h'
+    }
+
+    var data = [trace1];
+
+    var layout = {
+        title:`Top 10 OTUs found in ${selectedid}`,
+        height:600,
+        weight:300,
+        margin:100
+    }
+
+    Plotly.newPlot("bar",data, layout);
     });
 
+    
   }
   function optionChanged(s)
   {

@@ -9,9 +9,10 @@ function unpack(rows, index) {
     });
   }
 
-  function Ids(){
+  function loadIds(){
       d3.json(url).then(function(data)
       {
+
         var ids = data.samples.map((row) => row.id)
         console.log(ids);
 
@@ -26,28 +27,46 @@ function unpack(rows, index) {
 			return d;
 		});
       });
-
-      
-
   }
+
+var x=[];
+var y=[];
+
   function buildPlot() {
 
     // Fetch the JSON data and console log it
     d3.json(url).then(function(data) {
     
     console.log(data.samples);
-    // 
-    // var selecteddata = unpack(data.samples,selectedid)[0];
-    // console.log(selecteddata);
+    
+    var selected = data.samples.map(function (row){
+        if(row.id === selectedid)
+        {
+            x= row.otu_ids;
+            y = row.sample_values;
+            return x,y;
+            
+        }
+        else
+        {
+            return false;
+        }
     });
+    //var selecteddata = unpack(data.samples,selectedid)[0];
+    console.log(selected);
+    console.log(x);
+    console.log(y);
+    });
+
   }
   function optionChanged(s)
   {
     alert(s);
   }
-  Ids();
+
+  loadIds();
   
-  //buildPlot();
+  buildPlot();
 // var otu = data1.map((row) => row.samples)
 
 // console.log(otu);

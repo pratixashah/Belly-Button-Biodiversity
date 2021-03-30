@@ -1,55 +1,55 @@
 var url = "samples.json";
-var selectedid = "940";
+var selectedid = 0;
+// function unpack(rows, index) {
+//     //return rows[index];
+//     return rows.map(function(row) {
+//         if(row.id == index)
+//         return row;
+//     });
+//   }
 
-function unpack(rows, index) {
-    //return rows[index];
-    return rows.map(function(row) {
-        if(row.id == index)
-        return row;
-    });
-  }
+  function loadIds()
+  {
+     d3.json(url).then(
+         function(data)
+        {
+            var ids = data.samples.map((row) => row.id)
+            console.log(ids);
 
-  function loadIds(){
-      d3.json(url).then(function(data)
-      {
+            selectedid = ids[0];
 
-        var ids = data.samples.map((row) => row.id)
-        console.log(ids);
-
-        d3.select("#selDataset").data(ids).enter().append('option');
-
-        d3.select("#selDataset")
-		.selectAll("option")
-		.data(ids)
-		.enter().append("option")
-		.text(function(d) { return d; })
-		.attr("value", function (d, i) {
-			return d;
-		});
-      });
+            d3.select("#selDataset")
+            .selectAll("option")
+            .data(ids)
+            .enter().append("option")
+            .text(function(d) { return d; })
+            .property("value",ids[0])
+            .attr("value", function (d, i) {
+                return d;
+            });
+        });     
   }
 
 var x=[];
 var y=[];
 var labels=[];
 
-  function buildPlot() {
-
+function buildPlot() 
+{
     // Fetch the JSON data and console log it
     d3.json(url).then(function(data) {
-    
-    console.log(data.samples);
 
-    var selected = data.samples.map(function (row){
+    var selected = data.samples.map(function(row){
         if(row.id === selectedid)
         {
-            y = row.sample_values.sort((a,b) => b.sample_values - a.sample_values);
-            x = row.otu_ids.sort((a,b) => b.sample_values - a.sample_values);
-            labels = row.otu_labels;
+            y = row.sample_values.sort((a,b) => a.sample_values - b.sample_values);
+            x = row.otu_ids.sort((a,b) => a.sample_values - b.sample_values);
+            labels = row.otu_labels.sort((a,b) => a.sample_values - b.sample_values);
 
-            x = x.slice(0,10).reverse();
+            x = x.slice(0,10).reverse().map((row) => `OTU ${row}`);
             y = y.slice(0,10).reverse();
             labels = labels.slice(0,10).reverse();
+
             console.log(x);
             console.log(y);
             console.log(labels);
@@ -60,11 +60,9 @@ var labels=[];
             return false;
         }
     });
-    //var selecteddata = unpack(data.samples,selectedid)[0];
-    //console.log(selected);
 
     var trace1 = {
-        y:x.map((row) => `OTU ${row}`),
+        y:x,
         x:y,
         text:labels,
         type:"bar",
@@ -79,20 +77,50 @@ var labels=[];
         weight:300,
         margin:100
     }
-
     Plotly.newPlot("bar",data, layout);
     });
 
-    
-  }
-  function optionChanged(s)
-  {
-    alert(s);
-  }
+}
 
-  loadIds();
-  
-  buildPlot();
+function optionChanged(id)
+{
+    alert(id);
+
+    selectedid = id;
+
+    d3.json(url).then(
+        function(data) 
+        {
+
+        var selected = data.samples.map(
+            function(row)
+            {
+                if(row.id === selectedid)
+                {
+                    y = row.sample_values.sort((a,b) => a.sample_values - b.sample_values);
+                    x = row.otu_ids.sort((a,b) => a.sample_values - b.sample_values);
+                    labels = row.otu_labels.sort((a,b) => a.sample_values - b.sample_values);
+        
+                    x = x.slice(0,10).reverse().map((row) => `OTU ${row}`);
+                    y = y.slice(0,10).reverse();
+                    labels = labels.slice(0,10).reverse();
+                }
+            });
+            console.log(x);
+            console.log(y);
+            //Plotly.restyle("bar","x:",[y],"y:",[x]);
+            Plotly.restyle("bar", "x", [y]);
+            Plotly.restyle("bar", "y", [x]);
+            Plotly.restyle("bar","text", [labels]);
+            Plotly.restyle("bar","title", `Top 10 OTUs found in ${selectedid}`);
+    });
+
+    //buildPlot()
+}
+
+loadIds();
+
+buildPlot();
 // var otu = data1.map((row) => row.samples)
 
 // console.log(otu);

@@ -144,6 +144,21 @@ function optionChanged(id)
                     labels = labels.slice(0,10).reverse();
                 }
             });
+                
+            var metadata = data.metadata.filter(function(m) { return m.id == selectedid});
+
+            console.log(metadata);
+    
+            d3.select("#sample-metadata").html("");
+
+            d3.select("#sample-metadata")
+            .selectAll("p")
+            .data(metadata)
+            .enter()
+            .append("p")
+            .html(function(d) { 
+                return `<p>Id: ${d.id}</p><p>Ethinicity: ${d.ethnicity}</p><p>Gender: ${d.gender}</p><p>Age: ${d.age}</p><p>Location: ${d.location}</p><p>bbType: ${d.bbtype}</p><p>wfreq: ${d.wfreq}</p>`; });
+
             console.log(x);
             console.log(y);
 
@@ -158,5 +173,5 @@ function optionChanged(id)
 }
 
 loadIds();
-//buildPlot();
+buildPlot();
 

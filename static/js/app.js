@@ -1,35 +1,48 @@
 var url = "samples.json";
 var selectedid = 0;
-// function unpack(rows, index) {
-//     //return rows[index];
-//     return rows.map(function(row) {
-//         if(row.id == index)
-//         return row;
-//     });
-//   }
 
   function loadIds()
   {
      d3.json(url).then(
          function(data)
         {
+            console.log(data.metadata);
             var ids = data.samples.map((row) => row.id)
             console.log(ids);
 
             selectedid = ids[0];
-
+            
             d3.select("#selDataset")
             .selectAll("option")
             .data(ids)
-            .enter().append("option")
+            .enter()
+            .append("option")
             .text(function(d) { return d; })
             .property("value",ids[0])
             .attr("value", function (d, i) {
                 return d;
             });
+
+            var metadata = data.metadata.filter(function(m) { return m.id == selectedid})[0];
+
+            console.log(metadata);
+
+            d3.select("#sample-metadata")
+            .selectAll("label")
+            .data(metadata)
+            .enter()
+            .append("label")
+            .text(function(d) { return `${d3.keys(metadata)}${d3.values(metadata)}`; })
+            .append('br');
         });     
   }
-
+//   d3.select(".img-gallery").selectAll("div")
+//   .data(complexData)
+//   .enter() // creates placeholder for new data
+//   .append("div") // appends a div to placeholder
+//   .classed("col-md-4 thumbnail", true) // sets the class of the new div
+//   .html(function(d) {return `<img src="${d.url}">`;
+//   }); /
 
 var x=[];
 var y=[];
@@ -73,7 +86,6 @@ function buildPlot()
     var data = [trace1];
 
     var layout = {
-       // title:`Top 10 OTUs found in ${selectedid}`,
         title:`Bar Chart`,
         height:600,
         weight:300,
@@ -146,5 +158,5 @@ function optionChanged(id)
 }
 
 loadIds();
-buildPlot();
+//buildPlot();
 

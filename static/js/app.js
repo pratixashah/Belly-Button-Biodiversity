@@ -23,17 +23,17 @@ var selectedid = 0;
                 return d;
             });
 
-            var metadata = data.metadata.filter(function(m) { return m.id == selectedid})[0];
+            var metadata = data.metadata.filter(function(m) { return m.id == selectedid});
 
             console.log(metadata);
 
             d3.select("#sample-metadata")
-            .selectAll("label")
+            .selectAll("p")
             .data(metadata)
             .enter()
-            .append("label")
-            .text(function(d) { return `${d3.keys(metadata)}${d3.values(metadata)}`; })
-            .append('br');
+            .append("p")
+            .html(function(d) { 
+                return `<p>Id: ${d.id}</p><p>Ethinicity: ${d.ethnicity}</p><p>Gender: ${d.gender}</p><p>Age: ${d.age}</p><p>Location: ${d.location}</p><p>bbType: ${d.bbtype}</p><p>wfreq: ${d.wfreq}</p>`; });
         });     
   }
 //   d3.select(".img-gallery").selectAll("div")

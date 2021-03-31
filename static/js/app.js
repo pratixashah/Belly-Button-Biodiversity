@@ -74,7 +74,7 @@ function buildPlot()
 
     var layout = {
        // title:`Top 10 OTUs found in ${selectedid}`,
-        title:`Top 10 OTUs`,
+        title:`Bar Chart`,
         height:600,
         weight:300,
         margin:100
@@ -89,7 +89,8 @@ function buildPlot()
         marker:
         {
             size: y,
-            color:x
+            color:x,
+            colorscale: 'Portland'
         },
         type:"bubble"
     }
@@ -97,8 +98,8 @@ function buildPlot()
     var data2 = [trace2];
 
     var layout2 = {
-       // title:`Top 10 OTUs found in ${selectedid}`,
-        title:`Top 10 OTUs`
+        title:`Bubble Chart`,
+        xaxis:{ title:"OTU ID"}
     }
 
     Plotly.newPlot("bubble",data2,layout2);
@@ -133,22 +134,17 @@ function optionChanged(id)
             });
             console.log(x);
             console.log(y);
-            //Plotly.restyle("bar","x:",[y],"y:",[x]);
+
             Plotly.restyle("bar", "x", [y]);
             Plotly.restyle("bar", "y", [x.map((row) => `OTU ${row}`)]);
             Plotly.restyle("bar","text", [labels]);
-            //Plotly.restyle("bar","title",`{Top 10 OTUs found in ${selectedid}}`);
-    });
 
-    //buildPlot()
+            Plotly.restyle("bubble", "x", [x]);
+            Plotly.restyle("bubble", "y", [y]);
+            Plotly.restyle("bubble","text", [labels]);
+    });
 }
 
 loadIds();
-
 buildPlot();
-// var otu = data1.map((row) => row.samples)
 
-// console.log(otu);
-// Promise Pending
-// const dataPromise = d3.json(url);
-// console.log("Data Promise: ", dataPromise);

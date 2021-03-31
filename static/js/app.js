@@ -30,6 +30,7 @@ var selectedid = 0;
         });     
   }
 
+
 var x=[];
 var y=[];
 var labels=[];
@@ -46,7 +47,7 @@ function buildPlot()
             x = row.otu_ids.sort((a,b) => a.sample_values - b.sample_values);
             labels = row.otu_labels.sort((a,b) => a.sample_values - b.sample_values);
 
-            x = x.slice(0,10).reverse().map((row) => `OTU ${row}`);
+            x = x.slice(0,10).reverse();
             y = y.slice(0,10).reverse();
             labels = labels.slice(0,10).reverse();
 
@@ -62,7 +63,7 @@ function buildPlot()
     });
 
     var trace1 = {
-        y:x,
+        y:x.map((row) => `OTU ${row}`),
         x:y,
         text:labels,
         type:"bar",
@@ -72,12 +73,36 @@ function buildPlot()
     var data = [trace1];
 
     var layout = {
-        title:`Top 10 OTUs found in ${selectedid}`,
+       // title:`Top 10 OTUs found in ${selectedid}`,
+        title:`Top 10 OTUs`,
         height:600,
         weight:300,
         margin:100
     }
     Plotly.newPlot("bar",data, layout);
+
+    var trace2 = {
+        y:y,
+        x:x,
+        text:labels,
+        mode: 'markers',
+        marker:
+        {
+            size: y,
+            color:x
+        },
+        type:"bubble"
+    }
+
+    var data2 = [trace2];
+
+    var layout2 = {
+       // title:`Top 10 OTUs found in ${selectedid}`,
+        title:`Top 10 OTUs`
+    }
+
+    Plotly.newPlot("bubble",data2,layout2);
+
     });
 
 }
@@ -101,7 +126,7 @@ function optionChanged(id)
                     x = row.otu_ids.sort((a,b) => a.sample_values - b.sample_values);
                     labels = row.otu_labels.sort((a,b) => a.sample_values - b.sample_values);
         
-                    x = x.slice(0,10).reverse().map((row) => `OTU ${row}`);
+                    x = x.slice(0,10).reverse();
                     y = y.slice(0,10).reverse();
                     labels = labels.slice(0,10).reverse();
                 }
@@ -110,9 +135,9 @@ function optionChanged(id)
             console.log(y);
             //Plotly.restyle("bar","x:",[y],"y:",[x]);
             Plotly.restyle("bar", "x", [y]);
-            Plotly.restyle("bar", "y", [x]);
+            Plotly.restyle("bar", "y", [x.map((row) => `OTU ${row}`)]);
             Plotly.restyle("bar","text", [labels]);
-            Plotly.restyle("bar","title", `Top 10 OTUs found in ${selectedid}`);
+            //Plotly.restyle("bar","title",`{Top 10 OTUs found in ${selectedid}}`);
     });
 
     //buildPlot()

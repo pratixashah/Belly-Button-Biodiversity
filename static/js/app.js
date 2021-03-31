@@ -6,7 +6,7 @@ var selectedid = 0;
      d3.json(url).then(
          function(data)
         {
-            console.log(data.metadata);
+            console.log(data);
             var ids = data.samples.map((row) => row.id)
             console.log(ids);
 
@@ -34,6 +34,22 @@ var selectedid = 0;
             .append("p")
             .html(function(d) { 
                 return `<p>Id: ${d.id}</p><p>Ethinicity: ${d.ethnicity}</p><p>Gender: ${d.gender}</p><p>Age: ${d.age}</p><p>Location: ${d.location}</p><p>bbType: ${d.bbtype}</p><p>wfreq: ${d.wfreq}</p>`; });
+
+            console.log(metadata.map((row) => row.wfreq)[0]);
+
+            var data = [
+                {
+                    domain: { x: [0, 1], y: [0, 1] },
+                    value: metadata.map((row) => row.wfreq)[0],
+                    title: { text: "Speed" },
+                    type: "indicator",
+                    mode: "gauge+number"
+   
+                }
+            ];
+            
+            var layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
+            Plotly.newPlot('gauge', data, layout);
         });     
   }
 //   d3.select(".img-gallery").selectAll("div")

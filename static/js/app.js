@@ -39,16 +39,46 @@ var selectedid = 0;
 
             var data = [
                 {
-                    domain: { x: [0, 1], y: [0, 1] },
+                    domain: { x: [0, 10], y: [0, 10]},
                     value: metadata.map((row) => row.wfreq)[0],
-                    title: { text: "Speed" },
+                    title: { text: "Belly Button Washing Frequency - Scrubs per week" },
                     type: "indicator",
-                    mode: "gauge+number"
-   
+                    mode: "gauge+number",
+                    values:[180/9,180/9,180/9,180/9,180/9,180/9,180/9,180/9,180/9,180],
+                    text: ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9'],
+                    gauge: {
+                        axis: { range: [null, 10] },
+                    //     //values:[1/10,1/10,1/10,1/10,1/10,1/10,1/10,1/10,10]
+                        steps: [
+                          { range: [0, 1], color: "#F8F3EC"},
+                          { range: [1, 2], color: "#eff2e6"},
+                          { range: [2,3], color: "#E9E6CA" },
+                          { range: [3,4], color: "#E2E4B1" },
+                          { range: [4,5], color: "#D5E49D" },
+                          { range: [5,6], color: "#B7CC92" },
+                          { range: [6,7], color: "#8CBF88" },
+                          { range: [7,8], color: "#8ABB8F" },
+                          { range: [8,9], color: "#85B48A" },
+                          { range: [9,10], color:"#69946e"}
+                        ],
+                    //    // labels:["0-1","1-2","2-3","3-4","4-5","5-6","6-7","7-8","8-9"]
+                    }//,
+                    // marker: {
+                    //     colors: ['#F8F3EC','#f0f4e5','#E9E6CA','#E2E4B1','#D5E49D','#B7CC92','#8CBF88','#8ABB8F','#85B48A','white'],
+                    //     labels: ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9',''],
+                    //     hoverinfo: "label"
+                    //   }
                 }
             ];
             
-            var layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
+            var layout = {
+                width: 500,
+                height: 400,
+                margin: { t: 0, r: 0, l: 0, b: 0 },
+                //paper_bgcolor: "lavender",
+                font: { color: "darkblue", family: "Arial" }
+              };
+
             Plotly.newPlot('gauge', data, layout);
         });     
   }
@@ -178,6 +208,8 @@ function optionChanged(id)
             console.log(x);
             console.log(y);
 
+            console.log(metadata.map((row) => row.wfreq)[0]);
+
             Plotly.restyle("bar", "x", [y]);
             Plotly.restyle("bar", "y", [x.map((row) => `OTU ${row}`)]);
             Plotly.restyle("bar","text", [labels]);
@@ -185,6 +217,8 @@ function optionChanged(id)
             Plotly.restyle("bubble", "x", [x]);
             Plotly.restyle("bubble", "y", [y]);
             Plotly.restyle("bubble","text", [labels]);
+
+          
     });
 }
 

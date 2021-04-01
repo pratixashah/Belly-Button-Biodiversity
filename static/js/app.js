@@ -6,9 +6,9 @@ var selectedid = 0;
      d3.json(url).then(
          function(data)
         {
-            console.log(data);
+            //console.log(data);
             var ids = data.samples.map((row) => row.id)
-            console.log(ids);
+            //console.log(ids);
 
             selectedid = ids[0];
             
@@ -25,7 +25,7 @@ var selectedid = 0;
 
             var metadata = data.metadata.filter(function(m) { return m.id == selectedid});
 
-            console.log(metadata);
+            //console.log(metadata);
 
             d3.select("#sample-metadata")
             .selectAll("p")
@@ -35,20 +35,19 @@ var selectedid = 0;
             .html(function(d) { 
                 return `<p>Id: ${d.id}</p><p>Ethinicity: ${d.ethnicity}</p><p>Gender: ${d.gender}</p><p>Age: ${d.age}</p><p>Location: ${d.location}</p><p>bbType: ${d.bbtype}</p><p>wfreq: ${d.wfreq}</p>`; });
 
-            console.log(metadata.map((row) => row.wfreq)[0]);
+            //console.log(metadata.map((row) => row.wfreq)[0]);
 
             var data = [
                 {
-                    domain: { x: [0, 10], y: [0, 10]},
+                    domain: { x: [0, 1], y: [0, 1]},
                     value: metadata.map((row) => row.wfreq)[0],
-                    title: { text: "Belly Button Washing Frequency - Scrubs per week" },
+                    title: { text: "Belly Button Washing Frequency - Scrubs per week"},
                     type: "indicator",
                     mode: "gauge+number",
-                    values:[180/9,180/9,180/9,180/9,180/9,180/9,180/9,180/9,180/9,180],
-                    text: ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9'],
+                    // values:[180/9,180/9,180/9,180/9,180/9,180/9,180/9,180/9,180/9,180],
+                    meta: ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9'],
                     gauge: {
                         axis: { range: [null, 10] },
-                    //     //values:[1/10,1/10,1/10,1/10,1/10,1/10,1/10,1/10,10]
                         steps: [
                           { range: [0, 1], color: "#F8F3EC"},
                           { range: [1, 2], color: "#eff2e6"},
@@ -61,13 +60,7 @@ var selectedid = 0;
                           { range: [8,9], color: "#85B48A" },
                           { range: [9,10], color:"#69946e"}
                         ],
-                    //    // labels:["0-1","1-2","2-3","3-4","4-5","5-6","6-7","7-8","8-9"]
-                    }//,
-                    // marker: {
-                    //     colors: ['#F8F3EC','#f0f4e5','#E9E6CA','#E2E4B1','#D5E49D','#B7CC92','#8CBF88','#8ABB8F','#85B48A','white'],
-                    //     labels: ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9',''],
-                    //     hoverinfo: "label"
-                    //   }
+                    }
                 }
             ];
             
@@ -99,6 +92,7 @@ function buildPlot()
     // Fetch the JSON data and console log it
     d3.json(url).then(function(data) {
 
+    //console.log(selectedid);
     var selected = data.samples.map(function(row){
         if(row.id === selectedid)
         {
@@ -106,13 +100,13 @@ function buildPlot()
             x = row.otu_ids.sort((a,b) => a.sample_values - b.sample_values);
             labels = row.otu_labels.sort((a,b) => a.sample_values - b.sample_values);
 
-            x = x.slice(0,10).reverse();
-            y = y.slice(0,10).reverse();
-            labels = labels.slice(0,10).reverse();
-
-            console.log(x);
-            console.log(y);
-            console.log(labels);
+            // x = x.slice(0,10).reverse();
+            // y = y.slice(0,10).reverse();
+            //labels = labels.slice(0,10).reverse();
+            // console.log("Chart Data");
+            // console.log(x);
+            // console.log(y);
+            // console.log(labels);
             return true;
         }
         else
@@ -122,9 +116,9 @@ function buildPlot()
     });
 
     var trace1 = {
-        y:x.map((row) => `OTU ${row}`),
-        x:y,
-        text:labels,
+        y:x.slice(0,10).reverse().map((row) => `OTU ${row}`),
+        x:y.slice(0,10).reverse(),
+        text:labels.slice(0,10).reverse(),
         type:"bar",
         orientation:'h'
     }
@@ -185,15 +179,15 @@ function optionChanged(id)
                     x = row.otu_ids.sort((a,b) => a.sample_values - b.sample_values);
                     labels = row.otu_labels.sort((a,b) => a.sample_values - b.sample_values);
         
-                    x = x.slice(0,10).reverse();
-                    y = y.slice(0,10).reverse();
-                    labels = labels.slice(0,10).reverse();
+                    // x = x.slice(0,10).reverse();
+                    // y = y.slice(0,10).reverse();
+                    // labels = labels.slice(0,10).reverse();
                 }
             });
                 
             var metadata = data.metadata.filter(function(m) { return m.id == selectedid});
 
-            console.log(metadata);
+            //console.log(metadata);
     
             d3.select("#sample-metadata").html("");
 
@@ -205,20 +199,20 @@ function optionChanged(id)
             .html(function(d) { 
                 return `<p>Id: ${d.id}</p><p>Ethinicity: ${d.ethnicity}</p><p>Gender: ${d.gender}</p><p>Age: ${d.age}</p><p>Location: ${d.location}</p><p>bbType: ${d.bbtype}</p><p>wfreq: ${d.wfreq}</p>`; });
 
-            console.log(x);
-            console.log(y);
+            // console.log(x);
+            // console.log(y);
 
-            console.log(metadata.map((row) => row.wfreq)[0]);
+            //console.log(metadata.map((row) => row.wfreq)[0]);
 
-            Plotly.restyle("bar", "x", [y]);
-            Plotly.restyle("bar", "y", [x.map((row) => `OTU ${row}`)]);
-            Plotly.restyle("bar","text", [labels]);
+            Plotly.restyle("bar", "x", [y.slice(0,10).reverse()]);
+            Plotly.restyle("bar", "y", [x.slice(0,10).reverse().map((row) => `OTU ${row}`)]);
+            Plotly.restyle("bar","text", [labels.slice(0,10).reverse()]);
 
             Plotly.restyle("bubble", "x", [x]);
             Plotly.restyle("bubble", "y", [y]);
             Plotly.restyle("bubble","text", [labels]);
 
-          
+            Plotly.restyle("gauge","value", metadata.map((row) => row.wfreq)[0]);
     });
 }
 

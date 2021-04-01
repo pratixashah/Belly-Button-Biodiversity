@@ -23,7 +23,7 @@ An interactive dashboard to explore the Belly Button Biodiversity dataset, which
     - otu_labels as the hovertext for the chart.
 
   - **3. Gauge Chart:**
-    - It shows weekly washing frequency of the individual.
+    - It shows belly button washing frequency weekly of the individual.
     - The value ranges between 0 to 9.
 
   - **4. Bubble Chart:**

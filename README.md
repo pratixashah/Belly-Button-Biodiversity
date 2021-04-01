@@ -11,7 +11,7 @@ An interactive dashboard to explore the Belly Button Biodiversity dataset, which
 - Displays a HTML web page index.html as landing page.
 - Loads list of Ids to dropdown with first Id selected by default.
 - Based on user selection for Id, it changes dashboard dynamically. 
-
+- It includes:
   - **1. Demographic Information:**
     - Display each key-value pair from the metadata JSON object.
     - Displays the sample metadata, i.e., an individual’s demographic information.

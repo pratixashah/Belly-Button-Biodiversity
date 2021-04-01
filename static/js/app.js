@@ -1,6 +1,11 @@
 var url = "samples.json";
 var selectedid = 0;
 
+var x=[];
+var y=[];
+var labels=[];
+
+
   function loadIds()
   {
      d3.json(url).then(
@@ -25,7 +30,7 @@ var selectedid = 0;
 
             var metadata = data.metadata.filter(function(m) { return m.id == selectedid});
 
-            //console.log(metadata);
+            console.log(metadata[0].wfreq);
 
             d3.select("#sample-metadata")
             .selectAll("p")
@@ -35,12 +40,78 @@ var selectedid = 0;
             .html(function(d) { 
                 return `<p>Id: ${d.id}</p><p>Ethinicity: ${d.ethnicity}</p><p>Gender: ${d.gender}</p><p>Age: ${d.age}</p><p>Location: ${d.location}</p><p>bbType: ${d.bbtype}</p><p>wfreq: ${d.wfreq}</p>`; });
 
+            /////////////
+            var selected = data.samples.map(function(row){
+                if(row.id === selectedid)
+                {
+                    y = row.sample_values.sort((a,b) => a.sample_values - b.sample_values);
+                    x = row.otu_ids.sort((a,b) => a.sample_values - b.sample_values);
+                    labels = row.otu_labels.sort((a,b) => a.sample_values - b.sample_values);
+        
+                    // x = x.slice(0,10).reverse();
+                    // y = y.slice(0,10).reverse();
+                    //labels = labels.slice(0,10).reverse();
+                    // console.log("Chart Data");
+                    // console.log(x);
+                    // console.log(y);
+                    // console.log(labels);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            });
+        
+            var tracebar = {
+                y:x.slice(0,10).reverse().map((row) => `OTU ${row}`),
+                x:y.slice(0,10).reverse(),
+                text:labels.slice(0,10).reverse(),
+                type:"bar",
+                orientation:'h'
+            }
+        
+            var databar = [tracebar];
+        
+            var layoutbar = {
+                title:`Bar Chart`,
+                height:600,
+                weight:300,
+                margin:100
+            }
+            Plotly.newPlot("bar",databar, layoutbar);
+        
+            var tracebubble = {
+                y:y,
+                x:x,
+                text:labels,
+                mode: 'markers',
+                marker:
+                {
+                    size: y,
+                    color:x,
+                    colorscale: 'Portland'
+                },
+                type:"bubble"
+            }
+        
+            var databubble = [tracebubble];
+        
+            var layoutbubble = {
+                title:`Bubble Chart`,
+                xaxis:{ title:"OTU ID"}
+            }
+        
+            Plotly.newPlot("bubble",databubble,layoutbubble);
+        
+           
+            ////////////
             //console.log(metadata.map((row) => row.wfreq)[0]);
 
-            var data = [
+            var datagauge = [
                 {
                     domain: { x: [0, 1], y: [0, 1]},
-                    value: metadata.map((row) => row.wfreq)[0],
+                    value: metadata[0].wfreq,
                     title: { text: "Belly Button Washing Frequency - Scrubs per week"},
                     type: "indicator",
                     mode: "gauge+number",
@@ -64,7 +135,7 @@ var selectedid = 0;
                 }
             ];
             
-            var layout = {
+            var layoutgauge = {
                 width: 500,
                 height: 400,
                 margin: { t: 0, r: 0, l: 0, b: 0 },
@@ -72,7 +143,7 @@ var selectedid = 0;
                 font: { color: "darkblue", family: "Arial" }
               };
 
-            Plotly.newPlot('gauge', data, layout);
+            Plotly.newPlot('gauge', datagauge, layoutgauge);
         });     
   }
 //   d3.select(".img-gallery").selectAll("div")
@@ -83,9 +154,6 @@ var selectedid = 0;
 //   .html(function(d) {return `<img src="${d.url}">`;
 //   }); /
 
-var x=[];
-var y=[];
-var labels=[];
 
 function buildPlot() 
 {
@@ -217,5 +285,5 @@ function optionChanged(id)
 }
 
 loadIds();
-buildPlot();
+//buildPlot();
 

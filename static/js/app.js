@@ -6,16 +6,22 @@ var y=[];
 var labels=[];
 
 
-  function loadIds()
+  function loadPlots()
   {
      d3.json(url).then(
          function(data)
         {
-            //console.log(data);
+            console.log("Original Data:");
+            console.log(data);
+
+            // To get list of all Ids and fill dropdown
             var ids = data.samples.map((row) => row.id)
-            //console.log(ids);
+
+            console.log(`Ids: ${ids}`);
 
             selectedid = ids[0];
+            
+            console.log(`Selected Id: ${selectedid}`);
             
             d3.select("#selDataset")
             .selectAll("option")
@@ -28,33 +34,33 @@ var labels=[];
                 return d;
             });
 
-            var metadata = data.metadata.filter(function(m) { return m.id == selectedid});
+            // Fill Demographic Info 
+            let dataForSelectedId = data.metadata.filter(function(m) { return m.id == selectedid});
 
-            console.log(metadata[0].wfreq);
+            console.log("Info for Selected Id:");
+            console.log(dataForSelectedId[0]);
 
             d3.select("#sample-metadata")
             .selectAll("p")
-            .data(metadata)
+            .data(dataForSelectedId)
             .enter()
             .append("p")
             .html(function(d) { 
                 return `<p>Id: ${d.id}</p><p>Ethinicity: ${d.ethnicity}</p><p>Gender: ${d.gender}</p><p>Age: ${d.age}</p><p>Location: ${d.location}</p><p>bbType: ${d.bbtype}</p><p>wfreq: ${d.wfreq}</p>`; });
 
-            /////////////
-            var selected = data.samples.map(function(row){
+            // To get data for selected Id
+            data.samples.map(function(row){
                 if(row.id === selectedid)
                 {
                     y = row.sample_values.sort((a,b) => a.sample_values - b.sample_values);
                     x = row.otu_ids.sort((a,b) => a.sample_values - b.sample_values);
                     labels = row.otu_labels.sort((a,b) => a.sample_values - b.sample_values);
-        
-                    // x = x.slice(0,10).reverse();
-                    // y = y.slice(0,10).reverse();
-                    //labels = labels.slice(0,10).reverse();
-                    // console.log("Chart Data");
+    
+                    // console.log("Data for Chart");
                     // console.log(x);
                     // console.log(y);
                     // console.log(labels);
+
                     return true;
                 }
                 else
@@ -63,6 +69,7 @@ var labels=[];
                 }
             });
         
+            // To get Bar chart with Top 10 OTUs
             var tracebar = {
                 y:x.slice(0,10).reverse().map((row) => `OTU ${row}`),
                 x:y.slice(0,10).reverse(),
@@ -81,6 +88,7 @@ var labels=[];
             }
             Plotly.newPlot("bar",databar, layoutbar);
         
+            // To get Bubble Chart for all OTUs for selected Id
             var tracebubble = {
                 y:y,
                 x:x,
@@ -105,17 +113,14 @@ var labels=[];
             Plotly.newPlot("bubble",databubble,layoutbubble);
         
            
-            ////////////
-            //console.log(metadata.map((row) => row.wfreq)[0]);
-
+            // To get Gauge Chart
             var datagauge = [
                 {
                     domain: { x: [0, 1], y: [0, 1]},
-                    value: metadata[0].wfreq,
+                    value: dataForSelectedId[0].wfreq,
                     title: { text: "Belly Button Washing Frequency - Scrubs per week"},
                     type: "indicator",
                     mode: "gauge+number",
-                    // values:[180/9,180/9,180/9,180/9,180/9,180/9,180/9,180/9,180/9,180],
                     meta: ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9'],
                     gauge: {
                         axis: { range: [null, 10] },
@@ -139,101 +144,22 @@ var labels=[];
                 width: 500,
                 height: 400,
                 margin: { t: 0, r: 0, l: 0, b: 0 },
-                //paper_bgcolor: "lavender",
                 font: { color: "darkblue", family: "Arial" }
               };
 
             Plotly.newPlot('gauge', datagauge, layoutgauge);
         });     
   }
-//   d3.select(".img-gallery").selectAll("div")
-//   .data(complexData)
-//   .enter() // creates placeholder for new data
-//   .append("div") // appends a div to placeholder
-//   .classed("col-md-4 thumbnail", true) // sets the class of the new div
-//   .html(function(d) {return `<img src="${d.url}">`;
-//   }); /
 
-
-function buildPlot() 
-{
-    // Fetch the JSON data and console log it
-    d3.json(url).then(function(data) {
-
-    //console.log(selectedid);
-    var selected = data.samples.map(function(row){
-        if(row.id === selectedid)
-        {
-            y = row.sample_values.sort((a,b) => a.sample_values - b.sample_values);
-            x = row.otu_ids.sort((a,b) => a.sample_values - b.sample_values);
-            labels = row.otu_labels.sort((a,b) => a.sample_values - b.sample_values);
-
-            // x = x.slice(0,10).reverse();
-            // y = y.slice(0,10).reverse();
-            //labels = labels.slice(0,10).reverse();
-            // console.log("Chart Data");
-            // console.log(x);
-            // console.log(y);
-            // console.log(labels);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    });
-
-    var trace1 = {
-        y:x.slice(0,10).reverse().map((row) => `OTU ${row}`),
-        x:y.slice(0,10).reverse(),
-        text:labels.slice(0,10).reverse(),
-        type:"bar",
-        orientation:'h'
-    }
-
-    var data = [trace1];
-
-    var layout = {
-        title:`Bar Chart`,
-        height:600,
-        weight:300,
-        margin:100
-    }
-    Plotly.newPlot("bar",data, layout);
-
-    var trace2 = {
-        y:y,
-        x:x,
-        text:labels,
-        mode: 'markers',
-        marker:
-        {
-            size: y,
-            color:x,
-            colorscale: 'Portland'
-        },
-        type:"bubble"
-    }
-
-    var data2 = [trace2];
-
-    var layout2 = {
-        title:`Bubble Chart`,
-        xaxis:{ title:"OTU ID"}
-    }
-
-    Plotly.newPlot("bubble",data2,layout2);
-
-    });
-
-}
-
+// Function to get data & charts for selected id
 function optionChanged(id)
 {
-    alert(id);
-
+    
     selectedid = id;
 
+    console.log(`Selected Id: ${selectedid}`);
+
+    // To get data for selected Id
     d3.json(url).then(
         function(data) 
         {
@@ -246,44 +172,40 @@ function optionChanged(id)
                     y = row.sample_values.sort((a,b) => a.sample_values - b.sample_values);
                     x = row.otu_ids.sort((a,b) => a.sample_values - b.sample_values);
                     labels = row.otu_labels.sort((a,b) => a.sample_values - b.sample_values);
-        
-                    // x = x.slice(0,10).reverse();
-                    // y = y.slice(0,10).reverse();
-                    // labels = labels.slice(0,10).reverse();
                 }
             });
-                
-            var metadata = data.metadata.filter(function(m) { return m.id == selectedid});
-
-            //console.log(metadata);
+               
+            // Fill Demographic Info for selected id
+            let dataForSelectedId = data.metadata.filter(function(m) { return m.id == selectedid});
     
+            console.log("Info for Selected Id:");
+            console.log(dataForSelectedId[0]);
+
             d3.select("#sample-metadata").html("");
 
             d3.select("#sample-metadata")
             .selectAll("p")
-            .data(metadata)
+            .data(dataForSelectedId)
             .enter()
             .append("p")
             .html(function(d) { 
                 return `<p>Id: ${d.id}</p><p>Ethinicity: ${d.ethnicity}</p><p>Gender: ${d.gender}</p><p>Age: ${d.age}</p><p>Location: ${d.location}</p><p>bbType: ${d.bbtype}</p><p>wfreq: ${d.wfreq}</p>`; });
 
-            // console.log(x);
-            // console.log(y);
-
-            //console.log(metadata.map((row) => row.wfreq)[0]);
-
+            // To restyle Bar Chart
             Plotly.restyle("bar", "x", [y.slice(0,10).reverse()]);
             Plotly.restyle("bar", "y", [x.slice(0,10).reverse().map((row) => `OTU ${row}`)]);
             Plotly.restyle("bar","text", [labels.slice(0,10).reverse()]);
 
+            // To restyle Bubble Chart
             Plotly.restyle("bubble", "x", [x]);
             Plotly.restyle("bubble", "y", [y]);
             Plotly.restyle("bubble","text", [labels]);
 
-            Plotly.restyle("gauge","value", metadata.map((row) => row.wfreq)[0]);
+            // To restyle Gauge Chart
+            Plotly.restyle("gauge","value", dataForSelectedId[0].wfreq);
     });
 }
 
-loadIds();
-//buildPlot();
+// To load page with default chart and data 
+loadPlots();
 

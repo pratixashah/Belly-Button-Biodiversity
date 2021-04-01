@@ -82,7 +82,7 @@ var labels=[];
             var databar = [tracebar];
         
             var layoutbar = {
-                title:`Bar Chart`,
+                title:`Top 10 OTUs`,
                 height:600,
                 weight:300,
                 margin:100
@@ -107,7 +107,7 @@ var labels=[];
             var databubble = [tracebubble];
         
             var layoutbubble = {
-                title:`Bubble Chart`,
+                title:`All OTUs`,
                 xaxis:{ title:"OTU ID"}
             }
         
@@ -119,7 +119,7 @@ var labels=[];
                 {
                     domain: { x: [0, 1], y: [0, 1]},
                     value: dataForSelectedId[0].wfreq,
-                    title: { text: "Belly Button Washing Frequency - Scrubs per week"},
+                    title: { text: "Belly Button Washing Frequency (Scrubs per week)"},
                     type: "indicator",
                     mode: "gauge+number",
                     meta: ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9'],

@@ -8,7 +8,7 @@ An interactive dashboard to explore the Belly Button Biodiversity dataset, which
 
 
 **Features:**
-- Displays a HTML web page as landing page.
+- Displays a HTML web page index.html as landing page.
 - Loads list of Ids to dropdown with first Id selected by default.
 - Based on user selection for Id, it changes dashboard dynamically. 
 

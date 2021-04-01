@@ -1,4 +1,5 @@
 var url = "samples.json";
+
 var selectedid = 0;
 
 var x=[];
@@ -11,8 +12,8 @@ var labels=[];
      d3.json(url).then(
          function(data)
         {
-            console.log("Original Data:");
-            console.log(data);
+            // console.log("Original Data:");
+            // console.log(data);
 
             // To get list of all Ids and fill dropdown
             var ids = data.samples.map((row) => row.id)
@@ -22,7 +23,7 @@ var labels=[];
             selectedid = ids[0];
             
             console.log(`Selected Id: ${selectedid}`);
-            
+
             d3.select("#selDataset")
             .selectAll("option")
             .data(ids)
@@ -56,10 +57,10 @@ var labels=[];
                     x = row.otu_ids.sort((a,b) => a.sample_values - b.sample_values);
                     labels = row.otu_labels.sort((a,b) => a.sample_values - b.sample_values);
     
-                    // console.log("Data for Chart");
-                    // console.log(x);
-                    // console.log(y);
-                    // console.log(labels);
+                    console.log("Data for Chart");
+                    console.log(x.slice(0,10).reverse());
+                    console.log(y.slice(0,10).reverse());
+                    console.log(labels.slice(0,10).reverse());
 
                     return true;
                 }
@@ -154,7 +155,6 @@ var labels=[];
 // Function to get data & charts for selected id
 function optionChanged(id)
 {
-    
     selectedid = id;
 
     console.log(`Selected Id: ${selectedid}`);
@@ -175,6 +175,11 @@ function optionChanged(id)
                 }
             });
                
+            console.log("Data for Chart");
+            console.log(x.slice(0,10).reverse());
+            console.log(y.slice(0,10).reverse());
+            console.log(labels.slice(0,10).reverse());
+
             // Fill Demographic Info for selected id
             let dataForSelectedId = data.metadata.filter(function(m) { return m.id == selectedid});
     
